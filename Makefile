@@ -6,10 +6,11 @@ BINARYEN_BUILDDIR=$(ROOT_DIR)/build/binaryen
 WABT_WORKDIR=$(ROOT_DIR)/src/wabt
 WABT_BUILDDIR=$(ROOT_DIR)/build/wabt
 
-BUILD_ENGINE="Unix Makefiles"
+#BUILD_ENGINE="Unix Makefiles"
+BUILD_ENGINE=Ninja
 BUILD_TYPE=Release
 CPUS=3
-INSTALL_DIR=$(ROOT_DIR)/bin
+INSTALL_DIR=$(ROOT_DIR)/dist
 
 ifeq ($(BUILD_ENGINE),Ninja)
 MAKE=ninja
@@ -24,6 +25,8 @@ build: build-llvm build-binaryen build-wabt
 
 clean: clean-llvm clean-binaryen clean-wabt
 	rm -rf $(INSTALL_DIR)
+
+dist-clean: dist-clean-llvm dist-clean-binaryen dist-clean-wabt
 
 install: install-llvm install-binaryen install-wabt
 
@@ -42,8 +45,10 @@ build-llvm: $(LLVM_BUILDDIR)/$(MAKEFILE)
 	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) clang llc llvm-lib
 
 clean-llvm:
-	rm -rf $(LLVM_WORKDIR)
 	rm -rf $(LLVM_BUILDDIR)
+
+dist-clean-llvm: clean-llvm
+	rm -rf $(LLVM_WORKDIR)
 
 install-llvm:
 	mkdir -p $(INSTALL_DIR)
@@ -62,12 +67,14 @@ build-binaryen: $(BINARYEN_BUILDDIR)/$(MAKEFILE)
 	$(MAKE) -C $(BINARYEN_BUILDDIR) -j $(CPUS) wasm-as wasm-dis s2wasm
 
 clean-binaryen:
-	rm -rf $(BINARYEN_WORKDIR)
 	rm -rf $(BINARYEN_BUILDDIR)
+
+dist-clean-binaryen: clean-binaryen
+	rm -rf $(BINARYEN_WORKDIR)
 
 install-binaryen:
 	mkdir -p $(INSTALL_DIR)
-	cp $(addprefix $(BINARYEN_BUILDDIR)/bin/, wasm-as wasm-dis s2wasm) $(INSTALL_DIR) 
+	cp $(addprefix $(BINARYEN_BUILDDIR)/bin/, wasm-as wasm-dis s2wasm) $(INSTALL_DIR)/bin
 
 $(WABT_WORKDIR)/.git:
 	rm -rf $(WABT_WORKDIR)
@@ -82,11 +89,16 @@ build-wabt: $(WABT_BUILDDIR)/$(MAKEFILE)
 	$(MAKE) -C $(WABT_BUILDDIR) -j $(CPUS)
 
 clean-wabt:
-	rm -rf $(WABT_WORKDIR)
 	rm -rf $(WABT_BUILDDIR)
+
+dist-clean-wabt: clean-wabt
+	rm -rf $(WABT_WORKDIR)
 
 install-wabt:
 	mkdir -p $(INSTALL_DIR)
 	$(MAKE) -C $(WABT_BUILDDIR) install
 
-.PHONY: build clean install build-llvm clean-llvm install-llvm build-binaryen clean-binaryen install-binaryen
+.PHONY: build clean dist-clean install
+.PHONY: build-llvm dist-clean-llvm clean-llvm install-llvm
+.PHONY: build-binaryen dist-clean-binaryen clean-binaryen install-binaryen 
+.PHONY: build-wabt dist-clean-wabt clean-wabt install-wabt 
