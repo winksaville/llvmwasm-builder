@@ -1,5 +1,5 @@
 # Build llvm, binaryen and wabt for wasm
-Based on [yurydelendik wasmllvm](https://gist.github.com/yurydelendik/4eeff8248aeb14ce763ei)
+Based on [yurydelendik wasmllvm](https://gist.github.com/yurydelendik/4eeff8248aeb14ce763e)
 
 ## Prerequesites
   * Gcc 6+
