@@ -42,7 +42,7 @@ $(LLVM_BUILDDIR)/$(MAKEFILE): $(LLVM_WORKDIR)/.svn
 	cd $(LLVM_BUILDDIR); cmake -G $(BUILD_ENGINE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DLLVM_TARGETS_TO_BUILD= -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) $(LLVM_WORKDIR)
 
 build-llvm: $(LLVM_BUILDDIR)/$(MAKEFILE)
-	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) clang llc llvm-lib
+	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) clang llc llvm-lib llvm-link
 
 clean-llvm:
 	rm -rf $(LLVM_BUILDDIR)
@@ -52,7 +52,7 @@ dist-clean-llvm: clean-llvm
 
 install-llvm:
 	mkdir -p $(INSTALL_DIR)
-	$(MAKE) -C $(LLVM_BUILDDIR) install-clang install-llc install-llvm-lib
+	$(MAKE) -C $(LLVM_BUILDDIR) install-clang install-llc install-llvm-lib install-llvm-link
 
 $(BINARYEN_WORKDIR)/.git:
 	rm -rf $(BINARYEN_WORKDIR)
@@ -100,5 +100,5 @@ install-wabt:
 
 .PHONY: build clean dist-clean install
 .PHONY: build-llvm dist-clean-llvm clean-llvm install-llvm
-.PHONY: build-binaryen dist-clean-binaryen clean-binaryen install-binaryen 
-.PHONY: build-wabt dist-clean-wabt clean-wabt install-wabt 
+.PHONY: build-binaryen dist-clean-binaryen clean-binaryen install-binaryen
+.PHONY: build-wabt dist-clean-wabt clean-wabt install-wabt
