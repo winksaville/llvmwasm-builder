@@ -64,7 +64,7 @@ $(BINARYEN_BUILDDIR)/$(MAKEFILE): $(BINARYEN_WORKDIR)/.git
 	cd $(BINARYEN_BUILDDIR); cmake -G $(BUILD_ENGINE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) $(BINARYEN_WORKDIR)
 
 build-binaryen: $(BINARYEN_BUILDDIR)/$(MAKEFILE)
-	$(MAKE) -C $(BINARYEN_BUILDDIR) -j $(CPUS) wasm-as wasm-dis s2wasm
+	$(MAKE) -C $(BINARYEN_BUILDDIR) -j $(CPUS) wasm-as wasm-dis wasm-opt s2wasm
 
 clean-binaryen:
 	rm -rf $(BINARYEN_BUILDDIR)
@@ -74,7 +74,7 @@ dist-clean-binaryen: clean-binaryen
 
 install-binaryen:
 	mkdir -p $(INSTALL_DIR)
-	cp $(addprefix $(BINARYEN_BUILDDIR)/bin/, wasm-as wasm-dis s2wasm) $(INSTALL_DIR)/bin
+	cp $(addprefix $(BINARYEN_BUILDDIR)/bin/, wasm-as wasm-dis wasm-opt s2wasm) $(INSTALL_DIR)/bin
 
 $(WABT_WORKDIR)/.git:
 	rm -rf $(WABT_WORKDIR)
