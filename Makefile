@@ -42,7 +42,7 @@ $(LLVM_BUILDDIR)/$(MAKEFILE): $(LLVM_WORKDIR)/.svn
 	cd $(LLVM_BUILDDIR); cmake -G $(BUILD_ENGINE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DLLVM_TARGETS_TO_BUILD= -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) $(LLVM_WORKDIR)
 
 build-llvm: $(LLVM_BUILDDIR)/$(MAKEFILE)
-	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) clang llc llvm-lib llvm-link
+	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) clang llc llvm-lib llvm-link llvm-config
 
 clean-llvm:
 	rm -rf $(LLVM_BUILDDIR)
