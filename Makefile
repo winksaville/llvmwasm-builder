@@ -27,6 +27,7 @@ clean: clean-llvm clean-binaryen clean-wabt
 	rm -rf $(INSTALL_DIR)
 
 dist-clean: dist-clean-llvm dist-clean-binaryen dist-clean-wabt
+	rm -rf build/ dist/ src/
 
 install: install-llvm install-binaryen install-wabt
 
