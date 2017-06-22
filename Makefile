@@ -23,6 +23,8 @@ endif
 
 build: build-llvm build-binaryen build-wabt
 
+update: update-llvm update-binaryen update-wabt
+
 clean: clean-llvm clean-binaryen clean-wabt
 	rm -rf $(INSTALL_DIR)
 
@@ -37,6 +39,12 @@ $(LLVM_WORKDIR)/.svn:
 	svn co http://llvm.org/svn/llvm-project/llvm/trunk $(LLVM_WORKDIR)
 	svn co http://llvm.org/svn/llvm-project/cfe/trunk $(LLVM_WORKDIR)/tools/clang
 	svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk $(LLVM_WORKDIR)/projects/compiler-rt
+
+update-llvm:
+	mkdir -p $(LLVM_WORKDIR)
+	svn update $(LLVM_WORKDIR)
+	svn update $(LLVM_WORKDIR)/tools/clang
+	svn update $(LLVM_WORKDIR)/projects/compiler-rt
 
 $(LLVM_BUILDDIR)/$(MAKEFILE): $(LLVM_WORKDIR)/.svn
 	mkdir -p $(LLVM_BUILDDIR)
@@ -60,6 +68,10 @@ $(BINARYEN_WORKDIR)/.git:
 	mkdir -p $(BINARYEN_WORKDIR)
 	git clone https://github.com/WebAssembly/binaryen $(BINARYEN_WORKDIR)
 
+update-binaryen:
+	mkdir -p $(BINARYEN_WORKDIR)
+	(cd $(BINARYEN_WORKDIR) && git pull)
+
 $(BINARYEN_BUILDDIR)/$(MAKEFILE): $(BINARYEN_WORKDIR)/.git
 	mkdir -p $(BINARYEN_BUILDDIR)
 	cd $(BINARYEN_BUILDDIR); cmake -G $(BUILD_ENGINE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) $(BINARYEN_WORKDIR)
@@ -81,6 +93,10 @@ $(WABT_WORKDIR)/.git:
 	rm -rf $(WABT_WORKDIR)
 	mkdir -p $(WABT_WORKDIR)
 	git clone --recursive https://github.com/WebAssembly/wabt $(WABT_WORKDIR)
+
+update-wabt:
+	mkdir -p $(WABT_WORKDIR)
+	(cd $(WABT_WORKDIR) && git pull && git submodule update --recursive)
 
 $(WABT_BUILDDIR)/$(MAKEFILE): $(WABT_WORKDIR)/.git
 	mkdir -p $(WABT_BUILDDIR)
