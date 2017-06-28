@@ -8,7 +8,7 @@ WABT_BUILDDIR=$(ROOT_DIR)/build/wabt
 
 #BUILD_ENGINE="Unix Makefiles"
 BUILD_ENGINE=Ninja
-BUILD_TYPE=Release
+BUILD_TYPE=Debug
 CPUS=3
 INSTALL_DIR=$(ROOT_DIR)/dist
 
@@ -20,6 +20,7 @@ MAKE=make
 MAKEFILE=Makefile
 endif
 
+LLVM_TARGETS=clang llc llvm-lib llvm-link llvm-config llvm-ar llvm-as llvm-dis lli opt bugpoint
 
 build: build-llvm build-binaryen build-wabt
 
@@ -51,7 +52,7 @@ $(LLVM_BUILDDIR)/$(MAKEFILE): $(LLVM_WORKDIR)/.svn
 	cd $(LLVM_BUILDDIR); cmake -G $(BUILD_ENGINE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DLLVM_TARGETS_TO_BUILD= -DCMAKE_BUILD_TYPE=$(BUILD_TYPE) $(LLVM_WORKDIR)
 
 build-llvm: $(LLVM_BUILDDIR)/$(MAKEFILE)
-	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) clang llc llvm-lib llvm-link llvm-config
+	$(MAKE) -C $(LLVM_BUILDDIR) -j $(CPUS) $(LLVM_TARGETS)
 
 clean-llvm:
 	rm -rf $(LLVM_BUILDDIR)
@@ -61,7 +62,7 @@ dist-clean-llvm: clean-llvm
 
 install-llvm:
 	mkdir -p $(INSTALL_DIR)
-	$(MAKE) -C $(LLVM_BUILDDIR) install-clang install-llc install-llvm-lib install-llvm-link
+	$(MAKE) -C $(LLVM_BUILDDIR) $(patsubst %,install-%,$(LLVM_TARGETS))
 
 $(BINARYEN_WORKDIR)/.git:
 	rm -rf $(BINARYEN_WORKDIR)
